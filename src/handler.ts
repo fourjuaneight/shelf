@@ -71,9 +71,9 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
         );
       }
       case payload.type === 'Insert':
-        const data = payload.data as ShelfItem;
+        const insertData = payload.data as ShelfItem;
 
-        await addShelfItem(data);
+        await addShelfItem(insertData);
 
         return new Response(
           JSON.stringify({
@@ -84,9 +84,9 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
         );
         break;
       case payload.type === 'Update':
-        const data = payload.data as ShelfItem;
+        const updateData = payload.data as ShelfItem;
 
-        await updateShelfItem(data.id as string, data);
+        await updateShelfItem(updateData.id as string, updateData);
 
         return new Response(
           JSON.stringify({
