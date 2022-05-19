@@ -1,5 +1,10 @@
 import { categories, genres } from './tags';
-import { addShelfItem, queryShelfItems, updateShelfItem } from './hasura';
+import {
+  addShelfItem,
+  queryShelfItems,
+  searchShelfItems,
+  updateShelfItem,
+} from './hasura';
 
 import { RequestPayload, ShelfItem } from './typings.d';
 
@@ -96,12 +101,23 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
           responseInit
         );
         break;
-      default: {
-        const items = await queryShelfItems();
+      case payload.type === 'Search':
+        const searchPattern = payload.query as string;
+        const searchItems = await searchShelfItems(searchPattern);
 
         return new Response(
           JSON.stringify({
-            items,
+            items: searchItems,
+          }),
+          responseInit
+        );
+        break;
+      default: {
+        const queryItems = await queryShelfItems();
+
+        return new Response(
+          JSON.stringify({
+            items: queryItems,
           }),
           responseInit
         );
@@ -166,6 +182,11 @@ export const handleRequest = async (request: Request): Promise<Response> => {
       case payload.type === 'Update' && missingData(payload.data):
         return new Response(
           JSON.stringify({ error: 'Missing Update data.' }),
+          badReqBody
+        );
+      case payload.type === 'Search' && !payload.query:
+        return new Response(
+          JSON.stringify({ error: 'Missing Search query.' }),
           badReqBody
         );
       case !payload.key:

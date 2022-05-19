@@ -46,4 +46,5 @@ export interface RequestPayload {
   type: string;
   tagList?: string;
   data?: ShelfItem;
+  query?: string;
 }
