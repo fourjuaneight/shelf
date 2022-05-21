@@ -46,11 +46,13 @@ export const addShelfItem = async (item: ShelfItem): Promise<void> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
+      console.log(errors);
       throw `Adding record to Hasura - Shelf: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
   } catch (error) {
+    console.log(error);
     throw `Adding record to Hasura - Shelf: \n ${error}`;
   }
 };
@@ -104,11 +106,13 @@ export const updateShelfItem = async (
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
+      console.log(errors);
       throw `Updating record to Hasura - Shelf: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
   } catch (error) {
+    console.log(error);
     throw `Updating record to Hasura - Shelf: \n ${error}`;
   }
 };
@@ -150,6 +154,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
+      console.log(errors);
       throw `Querying records from Hasura - Shelf: \n ${errors
           .map(err => `${err.extensions.path}: ${err.message}`)
           .join('\n')} \n ${query}`;
@@ -157,6 +162,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
 
     return (response as HasuraQueryResp).data.media_shelf;
   } catch (error) {
+    console.log(error);
     throw `Querying records from Hasura - Shelf: \n ${error}`;
   }
 };
@@ -204,6 +210,7 @@ export const searchShelfItems = async (
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
+      console.log(errors);
       throw `Searching records from Hasura - Shelf: \n ${errors
           .map(err => `${err.extensions.path}: ${err.message}`)
           .join('\n')} \n ${query}`;
@@ -211,6 +218,7 @@ export const searchShelfItems = async (
 
     return (response as HasuraQueryResp).data.media_shelf;
   } catch (error) {
+    console.log(error);
     throw `Searching records from Hasura - Shelf: \n ${error}`;
   }
 };
