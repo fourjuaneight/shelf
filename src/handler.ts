@@ -125,6 +125,7 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
       }
     }
   } catch (error) {
+    console.log(error);
     return new Response(
       JSON.stringify({ error, location: payload.type }),
       errReqBody
