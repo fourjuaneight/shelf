@@ -77,12 +77,11 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
       }
       case payload.type === 'Insert':
         const insertData = payload.data as ShelfItem;
-
-        await addShelfItem(insertData);
+        const saved = await addShelfItem(insertData);
 
         return new Response(
           JSON.stringify({
-            saved: data.name,
+            saved,
             location: payload.type,
           }),
           responseInit
@@ -90,12 +89,11 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
         break;
       case payload.type === 'Update':
         const updateData = payload.data as ShelfItem;
-
-        await updateShelfItem(updateData.id as string, updateData);
+        const updated = await updateShelfItem(updateData.id as string, updateData);
 
         return new Response(
           JSON.stringify({
-            updated: data.name,
+            updated,
             location: payload.type,
           }),
           responseInit

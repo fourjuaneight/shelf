@@ -12,9 +12,9 @@ import {
  * @async
  *
  * @param {ShelfItem} item data to upload
- * @returns {Promise<void>}
+ * @returns {Promise<string>}
  */
-export const addShelfItem = async (item: ShelfItem): Promise<void> => {
+export const addShelfItem = async (item: ShelfItem): Promise<string> => {
   const query = `
     mutation {
       insert_media_shelf_one(object: {
@@ -51,6 +51,8 @@ export const addShelfItem = async (item: ShelfItem): Promise<void> => {
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
+
+    return (response as HasuraInsertResp).data.insert_media_shelf_one.name;
   } catch (error) {
     console.log(error);
     throw `Adding record to Hasura - Shelf: \n ${error}`;
@@ -64,12 +66,12 @@ export const addShelfItem = async (item: ShelfItem): Promise<void> => {
  *
  * @param {string} id item id
  * @param {ShelfItem} item data to update
- * @returns {Promise<void>}
+ * @returns {Promise<string>}
  */
 export const updateShelfItem = async (
   id: string,
   item: ShelfItem
-): Promise<void> => {
+): Promise<string> => {
   const query = `
     mutation {
       update_media_shelf(
@@ -111,6 +113,8 @@ export const updateShelfItem = async (
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
+
+    return (response as HasuraUpdateResp).data.update_media_shelf.name;
   } catch (error) {
     console.log(error);
     throw `Updating record to Hasura - Shelf: \n ${error}`;
