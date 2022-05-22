@@ -89,7 +89,10 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
         break;
       case payload.type === 'Update':
         const updateData = payload.data as ShelfItem;
-        const updated = await updateShelfItem(updateData.id as string, updateData);
+        const updated = await updateShelfItem(
+          updateData.id as string,
+          updateData
+        );
 
         return new Response(
           JSON.stringify({

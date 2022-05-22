@@ -160,8 +160,8 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
 
       console.log(errors);
       throw `Querying records from Hasura - Shelf: \n ${errors
-          .map(err => `${err.extensions.path}: ${err.message}`)
-          .join('\n')} \n ${query}`;
+        .map(err => `${err.extensions.path}: ${err.message}`)
+        .join('\n')} \n ${query}`;
     }
 
     return (response as HasuraQueryResp).data.media_shelf;
@@ -216,8 +216,8 @@ export const searchShelfItems = async (
 
       console.log(errors);
       throw `Searching records from Hasura - Shelf: \n ${errors
-          .map(err => `${err.extensions.path}: ${err.message}`)
-          .join('\n')} \n ${query}`;
+        .map(err => `${err.extensions.path}: ${err.message}`)
+        .join('\n')} \n ${query}`;
     }
 
     return (response as HasuraQueryResp).data.media_shelf;
