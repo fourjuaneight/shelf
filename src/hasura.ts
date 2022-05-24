@@ -52,7 +52,7 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
         .join('\n')} \n ${query}`;
     }
 
-    return (response as HasuraInsertResp).data.insert_media_shelf_one.name;
+    return (response as HasuraInsertResp).insert_media_shelf_one.name;
   } catch (error) {
     console.log(error);
     throw `Adding record to Hasura - Shelf: \n ${error}`;
@@ -114,7 +114,7 @@ export const updateShelfItem = async (
         .join('\n')} \n ${query}`;
     }
 
-    return (response as HasuraUpdateResp).data.update_media_shelf.name;
+    return (response as HasuraUpdateResp).update_media_shelf.returning[0].name;
   } catch (error) {
     console.log(error);
     throw `Updating record to Hasura - Shelf: \n ${error}`;
