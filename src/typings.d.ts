@@ -42,7 +42,6 @@ export interface HasuraErrors {
 }
 
 export interface RequestPayload {
-  key: string;
   type: string;
   tagList?: string;
   data?: ShelfItem;
