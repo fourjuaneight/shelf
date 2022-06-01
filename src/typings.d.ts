@@ -12,8 +12,10 @@ export interface ShelfItem {
 }
 
 export interface HasuraInsertResp {
-  insert_media_shelf_one: {
-    name: string;
+  data: {
+    insert_media_shelf_one: {
+      name: string;
+    };
   };
 }
 
