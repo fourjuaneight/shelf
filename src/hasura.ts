@@ -43,7 +43,6 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      console.log(errors);
       throw `Querying records from Hasura - Shelf: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
@@ -52,7 +51,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
     return (response as HasuraQueryResp).data.media_shelf;
   } catch (error) {
     console.log(error);
-    throw `Querying records from Hasura - Shelf: \n ${error}`;
+    throw error;
   }
 };
 
@@ -99,7 +98,6 @@ export const searchShelfItems = async (
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      console.log(errors);
       throw `Searching records from Hasura - Shelf: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
@@ -108,7 +106,7 @@ export const searchShelfItems = async (
     return (response as HasuraQueryResp).data.media_shelf;
   } catch (error) {
     console.log(error);
-    throw `Searching records from Hasura - Shelf: \n ${error}`;
+    throw error;
   }
 };
 
@@ -142,8 +140,6 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
     const existing = await searchShelfItems(item.name);
 
     if (existing.length !== 0) {
-      console.log('addShelfItem', 'Shelf item already exists.');
-
       throw `Adding record to Hasura: Shelf item already exists.`;
     }
 
@@ -160,7 +156,6 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      console.log(errors);
       throw `Adding record to Hasura - Shelf: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
@@ -169,7 +164,7 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
     return (response as HasuraInsertResp).data.insert_media_shelf_one.name;
   } catch (error) {
     console.log(error);
-    throw `Adding record to Hasura - Shelf: \n ${error}`;
+    throw error;
   }
 };
 
@@ -222,7 +217,6 @@ export const updateShelfItem = async (
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      console.log(errors);
       throw `Updating record to Hasura - Shelf: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
@@ -231,6 +225,6 @@ export const updateShelfItem = async (
     return (response as HasuraUpdateResp).update_media_shelf.returning[0].name;
   } catch (error) {
     console.log(error);
-    throw `Updating record to Hasura - Shelf: \n ${error}`;
+    throw error;
   }
 };
