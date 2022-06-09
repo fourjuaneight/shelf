@@ -1,7 +1,7 @@
-import { categories, genres } from './tags';
 import {
   addShelfItem,
   queryShelfItems,
+  queryTags,
   searchShelfItems,
   updateShelfItem,
 } from './hasura';
@@ -28,11 +28,6 @@ const noAuthReqBody = {
   status: 401,
   statusText: 'Unauthorized',
   ...responseInit,
-};
-// match tags list to array of tags
-const tagsList: { [key: string]: string[] } = {
-  categories,
-  genres,
 };
 
 const missingData = (data: ShelfItem | undefined): boolean => {
@@ -66,10 +61,11 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
     switch (true) {
       case payload.type === 'Tags': {
         const list = payload.tagList as string;
+        const tags = await queryTags(list);
 
         return new Response(
           JSON.stringify({
-            tags: tagsList[list],
+            tags,
             location: list,
           }),
           responseInit

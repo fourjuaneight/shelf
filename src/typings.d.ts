@@ -33,6 +33,12 @@ export interface HasuraQueryResp {
   };
 }
 
+export interface HasuraQueryTagsResp {
+  data: {
+    [key: string]: { name: string }[];
+  };
+}
+
 export interface HasuraErrors {
   errors: {
     extensions: {
