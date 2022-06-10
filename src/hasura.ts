@@ -188,7 +188,7 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
     const existing = await searchShelfItems(item.name);
 
     if (existing.length !== 0) {
-      throw `(addShelfItem): Adding record to Hasura: Shelf item already exists.`;
+      throw `(addShelfItem): Shelf item already exists.`;
     }
 
     const request = await fetch(`${HASURA_ENDPOINT}`, {
