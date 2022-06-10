@@ -8,17 +8,17 @@ import {
 } from './typings.d';
 
 /**
- * Get bookmark tags from Hasura.
+ * Get shelf tags from Hasura.
  * @function
  * @async
  *
- * @param {string} db
+ * @param {string} db table name
  * @returns {Promise<RecordData[]>}
  */
 export const queryTags = async (db: string): Promise<string[]> => {
   const query = `
     {
-      meta_${db}(where: {table: {_eq: "media"}, type: {_eq: "shelf"}}) {
+      meta_${db}(where: {schema: {_eq: "media"}, table: {_eq: "shelf"}}) {
         name
       }
     }
@@ -38,7 +38,7 @@ export const queryTags = async (db: string): Promise<string[]> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      throw `Querying tags from Hasura - ${table} - ${type}: \n ${errors
+      throw `(queryTags) - ${db}: \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
@@ -49,7 +49,7 @@ export const queryTags = async (db: string): Promise<string[]> => {
 
     return tags;
   } catch (error) {
-    console.log('queryTags', error);
+    console.log(error);
     throw error;
   }
 };
@@ -91,7 +91,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      throw `Querying records from Hasura - Shelf: \n ${errors
+      throw `(queryShelfItems): \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
@@ -146,7 +146,7 @@ export const searchShelfItems = async (
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      throw `Searching records from Hasura - Shelf: \n ${errors
+      throw `(searchShelfItems): \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
@@ -188,7 +188,7 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
     const existing = await searchShelfItems(item.name);
 
     if (existing.length !== 0) {
-      throw `Adding record to Hasura: Shelf item already exists.`;
+      throw `(addShelfItem): Adding record to Hasura: Shelf item already exists.`;
     }
 
     const request = await fetch(`${HASURA_ENDPOINT}`, {
@@ -204,7 +204,7 @@ export const addShelfItem = async (item: ShelfItem): Promise<string> => {
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      throw `Adding record to Hasura - Shelf: \n ${errors
+      throw `(addShelfItem): \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
@@ -265,7 +265,7 @@ export const updateShelfItem = async (
     if (response.errors) {
       const { errors } = response as HasuraErrors;
 
-      throw `Updating record to Hasura - Shelf: \n ${errors
+      throw `(updateShelfItem): \n ${errors
         .map(err => `${err.extensions.path}: ${err.message}`)
         .join('\n')} \n ${query}`;
     }
