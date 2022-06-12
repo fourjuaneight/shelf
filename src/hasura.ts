@@ -73,6 +73,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
         genre
         name
         rating
+        id
       }
     }
   `;
@@ -128,6 +129,7 @@ export const searchShelfItems = async (
         genre
         name
         rating
+        id
       }
     }
   `;
