@@ -18,7 +18,10 @@ import {
 export const queryTags = async (db: string): Promise<string[]> => {
   const query = `
     {
-      meta_${db}(where: {schema: {_eq: "media"}, table: {_eq: "shelf"}}) {
+      meta_${db}(
+        order_by: {name: asc},
+        where: {schema: {_eq: "media"}, table: {_eq: "shelf"}}
+      ) {
         name
       }
     }
