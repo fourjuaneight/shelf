@@ -1,11 +1,30 @@
 import {
+  CountColumn,
   HasuraErrors,
   HasuraInsertResp,
+  HasuraQueryAggregateResp,
   HasuraQueryResp,
   HasuraQueryTagsResp,
   HasuraUpdateResp,
+  RecordColumnAggregateCount,
   ShelfItem,
 } from './typings.d';
+
+const countUnique = (iterable: string[]) =>
+  iterable.reduce((acc: RecordColumnAggregateCount, item) => {
+    acc[item] = (acc[item] || 0) + 1;
+    return acc;
+  }, {});
+
+const countUniqueSorted = (iterable: string[]) =>
+  // sort descending by count
+  Object.entries(countUnique(iterable))
+    .sort((a, b) => b[1] - a[1])
+    .reduce(
+      (acc: RecordColumnAggregateCount, [key, val]) =>
+        ({ ...acc, [key]: val } as RecordColumnAggregateCount),
+      {}
+    );
 
 /**
  * Get shelf tags from Hasura.
@@ -101,6 +120,54 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
     }
 
     return (response as HasuraQueryResp).data.media_shelf;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+/**
+ * Get aggregated count of shelf column from Hasura.
+ * @function
+ * @async
+ *
+ * @param {string} column
+ * @returns {Promise<RecordColumnAggregateCount>}
+ */
+export const queryShelfAggregateCount = async (
+  column: CountColumn
+): Promise<RecordColumnAggregateCount> => {
+  const query = `
+    {
+      media_shelf(order_by: {${column}: asc}) {
+        ${column}
+      }
+    }
+  `;
+
+  try {
+    const request = await fetch(`${HASURA_ENDPOINT}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hasura-Admin-Secret': `${HASURA_ADMIN_SECRET}`,
+      },
+      body: JSON.stringify({ query }),
+    });
+    const response: any = await request.json();
+
+    if (response.errors) {
+      const { errors } = response as HasuraErrors;
+
+      throw `(queryShelfAggregateCount) - ${table}: \n ${errors
+        .map(err => `${err.extensions.path}: ${err.message}`)
+        .join('\n')} \n ${query}`;
+    }
+
+    const data = (response as HasuraQueryAggregateResp).data.media_shelf;
+    const collection = data.map(item => item[column]);
+
+    return countUniqueSorted(collection);
   } catch (error) {
     console.log(error);
     throw error;

@@ -1,12 +1,13 @@
 import {
   addShelfItem,
+  queryShelfAggregateCount,
   queryShelfItems,
   queryTags,
   searchShelfItems,
   updateShelfItem,
 } from './hasura';
 
-import { RequestPayload, ShelfItem } from './typings.d';
+import { CountColumn, RequestPayload, ShelfItem } from './typings.d';
 
 // default responses
 const responseInit = {
@@ -71,7 +72,7 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
           responseInit
         );
       }
-      case payload.type === 'Insert':
+      case payload.type === 'Insert': {
         const insertData = payload.data as ShelfItem;
         const saved = await addShelfItem(insertData);
 
@@ -83,7 +84,8 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
           responseInit
         );
         break;
-      case payload.type === 'Update':
+      }
+      case payload.type === 'Update': {
         const updateData = payload.data as ShelfItem;
         const updated = await updateShelfItem(
           updateData.id as string,
@@ -98,7 +100,8 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
           responseInit
         );
         break;
-      case payload.type === 'Search':
+      }
+      case payload.type === 'Search': {
         const searchPattern = payload.query as string;
         const searchItems = await searchShelfItems(searchPattern);
 
@@ -109,6 +112,19 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
           responseInit
         );
         break;
+      }
+      case payload.type === 'Count': {
+        const queryResults = await queryShelfAggregateCount(
+          payload.countColumn as CountColumn
+        );
+
+        return new Response(
+          JSON.stringify({
+            count: queryResults,
+          }),
+          responseInit
+        );
+      }
       default: {
         const queryItems = await queryShelfItems();
 
@@ -186,6 +202,11 @@ export const handleRequest = async (request: Request): Promise<Response> => {
       case payload.type === 'Search' && !payload.query:
         return new Response(
           JSON.stringify({ error: 'Missing Search query.' }),
+          badReqBody
+        );
+      case payload.type === 'Count' && !payload.countColumn:
+        return new Response(
+          JSON.stringify({ error: "Missing 'countColumn' parameter." }),
           badReqBody
         );
       case !key:

@@ -11,6 +11,17 @@ export interface ShelfItem {
   rating: number;
 }
 
+export type CountColumn =
+  | 'category'
+  | 'completed'
+  | 'creator'
+  | 'genre'
+  | 'rating';
+
+export interface RecordColumnAggregateCount {
+  [key: string]: number;
+}
+
 export interface HasuraInsertResp {
   data: {
     insert_media_shelf_one: {
@@ -30,6 +41,14 @@ export interface HasuraUpdateResp {
 export interface HasuraQueryResp {
   data: {
     media_shelf: ShelfItem[];
+  };
+}
+
+export interface HasuraQueryAggregateResp {
+  data: {
+    media_shelf: {
+      [key: string]: string;
+    }[];
   };
 }
 
@@ -54,4 +73,5 @@ export interface RequestPayload {
   tagList?: string;
   data?: ShelfItem;
   query?: string;
+  countColumn?: CountColumn;
 }
