@@ -68,8 +68,10 @@ export interface HasuraErrors {
   }[];
 }
 
+export type Types = 'Tags' | 'Count' | 'Query' | 'Search' | 'Insert' | 'Update';
+
 export interface RequestPayload {
-  type: string;
+  type: Types;
   tagList?: string;
   data?: ShelfItem;
   query?: string;
