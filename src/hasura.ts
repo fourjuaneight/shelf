@@ -213,6 +213,9 @@ export const searchShelfItems = async (
       },
       body: JSON.stringify({ query }),
     });
+    console.log('request', request);
+    console.log('status', request.status);
+    console.log('response', request.text());
     const response: HasuraQueryResp | HasuraErrors = await request.json();
 
     if (response.errors) {
