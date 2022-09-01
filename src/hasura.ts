@@ -84,6 +84,7 @@ export const queryTags = async (db: string): Promise<string[]> => {
  * @returns {Promise<ShelfItem[]>}
  */
 export const queryShelfItems = async (): Promise<ShelfItem[]> => {
+  let request: Response;
   const query = `
     {
       media_shelf(order_by: {name: asc}) {
@@ -99,11 +100,9 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
       }
     }
   `;
-  console.log('query', query);
 
   try {
-    console.log('endpoint', `${HASURA_ENDPOINT}`);
-    const request = await fetch(`${HASURA_ENDPOINT}`, {
+    request = await fetch(`${HASURA_ENDPOINT}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -111,9 +110,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
       },
       body: JSON.stringify({ query }),
     });
-    console.log('request', request);
     const response: HasuraQueryResp | HasuraErrors = await request.json();
-    console.log('response', response);
 
     if (response.errors) {
       const { errors } = response as HasuraErrors;
@@ -125,7 +122,8 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
 
     return (response as HasuraQueryResp).data.media_shelf;
   } catch (error) {
-    console.log(error, request);
+    console.log('request', request);
+    console.log(error);
     throw error;
   }
 };
