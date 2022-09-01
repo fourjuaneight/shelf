@@ -84,7 +84,6 @@ export const queryTags = async (db: string): Promise<string[]> => {
  * @returns {Promise<ShelfItem[]>}
  */
 export const queryShelfItems = async (): Promise<ShelfItem[]> => {
-  let request: Response;
   const query = `
     {
       media_shelf(order_by: {name: asc}) {
@@ -102,14 +101,12 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
   `;
 
   try {
-    request = await fetch(`${HASURA_ENDPOINT}`, {
+    const request = await fetch(`${HASURA_ENDPOINT}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Hasura-Admin-Secret': `${HASURA_ADMIN_SECRET}`,
-        Host: 'villela.co',
       },
-      cf: { resolveOverride: 'gql.villela.co' },
       body: JSON.stringify({ query }),
     });
     const response: HasuraQueryResp | HasuraErrors = await request.json();
@@ -124,7 +121,6 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
 
     return (response as HasuraQueryResp).data.media_shelf;
   } catch (error) {
-    console.log('request', request);
     console.log(error);
     throw error;
   }
