@@ -107,6 +107,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
         'Content-Type': 'application/json',
         'X-Hasura-Admin-Secret': `${HASURA_ADMIN_SECRET}`,
       },
+      redirect: 'manual' ,
       body: JSON.stringify({ query }),
     });
     const response: HasuraQueryResp | HasuraErrors = await request.json();
