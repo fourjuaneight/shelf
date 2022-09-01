@@ -107,6 +107,7 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
       headers: {
         'Content-Type': 'application/json',
         'X-Hasura-Admin-Secret': `${HASURA_ADMIN_SECRET}`,
+        Host: 'villela.co',
       },
       cf: { resolveOverride: 'gql.villela.co' },
       body: JSON.stringify({ query }),
