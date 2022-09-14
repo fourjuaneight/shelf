@@ -42,7 +42,7 @@ export const queryTags = async (db: string): Promise<string[]> => {
         order_by: {name: asc},
         where: {
           schema: {_eq: "media"},
-          table: {_eq: "${isGames ? 'games' : 'shelf'}"}
+          table: {_eq: "${isGames ? 'game' : 'shelf'}"}
         }
       ) {
         name
