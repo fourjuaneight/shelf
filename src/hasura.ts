@@ -35,11 +35,15 @@ const countUniqueSorted = (iterable: string[]) =>
  * @returns {Promise<RecordData[]>}
  */
 export const queryTags = async (db: string): Promise<string[]> => {
+  const isGames = db.includes('games');
   const query = `
     {
-      meta_${db}(
+      meta_${isGames ? 'genres' : db}(
         order_by: {name: asc},
-        where: {schema: {_eq: "media"}, table: {_eq: "shelf"}}
+        where: {
+          schema: {_eq: "media"},
+          table: {_eq: "${isGames ? 'games' : 'shelf'}"}
+        }
       ) {
         name
       }
