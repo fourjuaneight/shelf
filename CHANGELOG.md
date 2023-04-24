@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2023-04-24
+
+### Bug Fixes
+
+- [Trying manual redirect to fix same domain requests not working.](https://github.com/fourjuaneight/shelf/commit/c003707ba77f051cfd9a9171d57c4e480b0c5dde)
+- [Add cross-origin mode to fetch.](https://github.com/fourjuaneight/shelf/commit/44590065aa404fe60526b1dc9b31ad79050015a6)
+- [Add resolve override for subdomain fetch.](https://github.com/fourjuaneight/shelf/commit/e16fe9e1d87cda002902375e261ccb4e351ef481)
+- [Add host to header on same domain fetch.](https://github.com/fourjuaneight/shelf/commit/9d01a5927d74e09ba4ef3796431315f1eaaedda0)
+- [Load games genres when queried.](https://github.com/fourjuaneight/shelf/commit/d2cf0365ae728b23d0effb129f7fadd6c092d1b9)
+- [Minor syntax corrections.](https://github.com/fourjuaneight/shelf/commit/5fd8f73134330ce88ea8e870aa7b9e5d574c292a)
+
+### Features
+
+- [Add release creating on new tag via changelog action.](https://github.com/fourjuaneight/shelf/commit/4c3c4191d5e65b2ba94529ee26a9ef5f47b8b0b7)
+- [Add aggregated shelf items on GET.](https://github.com/fourjuaneight/shelf/commit/6dbd62f416844ecc2908bac46211909bb6d9c014)
+
+### Miscellaneous Tasks
+
+- [Update Changelog.](https://github.com/fourjuaneight/shelf/commit/7996594adcbe8b8ce02058c65dfcd3d0661544cb)
+- [Add logs for debugging.](https://github.com/fourjuaneight/shelf/commit/3e45636e3ca23831b1081e1c77057a9471fa7c7e)
+- [Remove unnecessary logs.](https://github.com/fourjuaneight/shelf/commit/79f567699c17a48a0acdecb100ff7bc3bbd58a88)
+- [Further debugging logs.](https://github.com/fourjuaneight/shelf/commit/3d8a03b2bfba7790b0cbe1968adbe34683acf208)
+- [Log request object on catch.](https://github.com/fourjuaneight/shelf/commit/98726eae695b83f7e2683c8009f52889a48caad6)
+- [Remove debug logs.](https://github.com/fourjuaneight/shelf/commit/00452a201f115259d52eeb5d5a009d11c018ebd1)
+- [Update to v1.3.0.](https://github.com/fourjuaneight/shelf/commit/4698c9bd015c4623bc9978e13b5df6e13373d403)
+
 ## [1.2.0] - 2022-07-29
 
 ### Bug Fixes
