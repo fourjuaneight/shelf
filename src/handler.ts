@@ -1,5 +1,6 @@
 import {
   addShelfItem,
+  queryGroupedShelfItems,
   queryShelfAggregateCount,
   queryShelfItems,
   queryTags,
@@ -153,6 +154,49 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
   }
 };
 
+const handlePost = async (request: Request): Promise<Response> => {
+  const payload: RequestPayload = await request.json();
+
+  switch (true) {
+    case !payload.type:
+      return new Response(
+        JSON.stringify({ error: "Missing 'type' parameter.", version }),
+        badReqBody
+      );
+    case payload.type === 'Tags' && !payload.tagList:
+      return new Response(
+        JSON.stringify({ error: "Missing 'tagList' parameter.", version }),
+        badReqBody
+      );
+    case payload.type === 'Insert' && missingData(payload.data):
+      return new Response(
+        JSON.stringify({ error: 'Missing Insert data.', version }),
+        badReqBody
+      );
+    case payload.type === 'Update' && missingData(payload.data):
+      return new Response(
+        JSON.stringify({ error: 'Missing Update data.', version }),
+        badReqBody
+      );
+    case payload.type === 'Search' && !payload.query:
+      return new Response(
+        JSON.stringify({ error: 'Missing Search query.', version }),
+        badReqBody
+      );
+    case payload.type === 'Count' && !payload.countColumn:
+      return new Response(
+        JSON.stringify({
+          error: "Missing 'countColumn' parameter.",
+          version,
+        }),
+        badReqBody
+      );
+    default: {
+      return handleAction(payload);
+    }
+  }
+};
+
 /**
  * Handler method for all requests.
  * @function
@@ -162,88 +206,50 @@ const handleAction = async (payload: RequestPayload): Promise<Response> => {
  * @returns {Promise<Response>} response object
  */
 export const handleRequest = async (request: Request): Promise<Response> => {
-  // POST requests only
-  if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ version }), {
-      status: 405,
-      statusText: 'Method Not Allowed',
-    });
-  }
-
-  // content-type check (required)
-  if (!request.headers.has('content-type')) {
-    return new Response(
-      JSON.stringify({
-        error: "Please provide 'content-type' header.",
-        version,
-      }),
-      badReqBody
-    );
-  }
-
   const contentType = request.headers.get('content-type');
+  const key = request.headers.get('key');
+  const isPost = request.method === 'POST';
+  const isGet = request.method === 'GET';
+  const isJson = contentType?.includes('application/json');
 
-  if (contentType?.includes('application/json')) {
-    const payload: RequestPayload = await request.json();
-    const key = request.headers.get('key');
+  switch (true) {
+    case !contentType:
+      return new Response(
+        JSON.stringify({
+          error: "Please provide 'content-type' header.",
+          version,
+        }),
+        badReqBody
+      );
+    case !isJson:
+      return new Response(JSON.stringify({ version }), {
+        status: 415,
+        statusText: 'Unsupported Media Type',
+      });
+    case isGet:
+      const queryItems = await queryGroupedShelfItems();
 
-    // check for required fields
-    switch (true) {
-      case !payload.type:
-        return new Response(
-          JSON.stringify({ error: "Missing 'type' parameter.", version }),
-          badReqBody
-        );
-      case payload.type === 'Tags' && !payload.tagList:
-        return new Response(
-          JSON.stringify({ error: "Missing 'tagList' parameter.", version }),
-          badReqBody
-        );
-      case payload.type === 'Insert' && missingData(payload.data):
-        return new Response(
-          JSON.stringify({ error: 'Missing Insert data.', version }),
-          badReqBody
-        );
-      case payload.type === 'Update' && missingData(payload.data):
-        return new Response(
-          JSON.stringify({ error: 'Missing Update data.', version }),
-          badReqBody
-        );
-      case payload.type === 'Search' && !payload.query:
-        return new Response(
-          JSON.stringify({ error: 'Missing Search query.', version }),
-          badReqBody
-        );
-      case payload.type === 'Count' && !payload.countColumn:
-        return new Response(
-          JSON.stringify({
-            error: "Missing 'countColumn' parameter.",
-            version,
-          }),
-          badReqBody
-        );
-      case !key:
-        return new Response(
-          JSON.stringify({ error: "Missing 'key' header.", version }),
-          noAuthReqBody
-        );
-      case key !== AUTH_KEY:
-        return new Response(
-          JSON.stringify({
-            error: "You're not authorized to access this API.",
-            version,
-          }),
-          noAuthReqBody
-        );
-      default: {
-        return handleAction(payload);
-      }
-    }
+      console.log('handleRequest', { queryItems });
+      return new Response(JSON.stringify(queryItems), responseInit);
+    case !key:
+      return new Response(
+        JSON.stringify({ error: "Missing 'key' header.", version }),
+        noAuthReqBody
+      );
+    case key !== AUTH_KEY:
+      return new Response(
+        JSON.stringify({
+          error: "You're not authorized to access this API.",
+          version,
+        }),
+        noAuthReqBody
+      );
+    case isPost:
+      return handlePost(request);
+    default:
+      return new Response(JSON.stringify({ version }), {
+        status: 405,
+        statusText: 'Method Not Allowed',
+      });
   }
-
-  // default to bad content-type
-  return new Response(JSON.stringify({ version }), {
-    status: 415,
-    statusText: 'Unsupported Media Type',
-  });
 };

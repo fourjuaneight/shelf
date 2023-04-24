@@ -44,6 +44,19 @@ export interface HasuraQueryResp {
   };
 }
 
+export interface HasuraGroupedQueryResp {
+  data: {
+    anime: ShelfItem[];
+    books: ShelfItem[];
+    comics: ShelfItem[];
+    games: ShelfItem[];
+    manga: ShelfItem[];
+    movies: ShelfItem[];
+    shows: ShelfItem[];
+    [key: string]: ShelfItem[];
+  };
+}
+
 export interface HasuraQueryAggregateResp {
   data: {
     media_shelf: {

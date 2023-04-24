@@ -1,6 +1,7 @@
 import {
   CountColumn,
   HasuraErrors,
+  HasuraGroupedQueryResp,
   HasuraInsertResp,
   HasuraQueryAggregateResp,
   HasuraQueryResp,
@@ -124,6 +125,119 @@ export const queryShelfItems = async (): Promise<ShelfItem[]> => {
     }
 
     return (response as HasuraQueryResp).data.media_shelf;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+/**
+ * Get shelf entries from Hasura in category groups.
+ */
+export const queryGroupedShelfItems = async () => {
+  const query = `
+    {
+      anime: media_shelf(order_by: {name: asc}, where: {category: {_eq: "anime"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+      books: media_shelf(order_by: {name: asc}, where: {category: {_eq: "books"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+      comics: media_shelf(order_by: {name: asc}, where: {category: {_eq: "comics"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+      games: media_shelf(order_by: {name: asc}, where: {category: {_eq: "games"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+      manga: media_shelf(order_by: {name: asc}, where: {category: {_eq: "manga"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+      movies: media_shelf(order_by: {name: asc}, where: {category: {_eq: "movies"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+      shows: media_shelf(order_by: {name: asc}, where: {category: {_eq: "shows"}}) {
+        category
+        comments
+        completed
+        cover
+        creator
+        genre
+        id
+        name
+        rating
+      }
+    }
+  `;
+
+  try {
+    const request = await fetch(`${HASURA_ENDPOINT}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Hasura-Admin-Secret': `${HASURA_ADMIN_SECRET}`,
+      },
+      body: JSON.stringify({ query }),
+    });
+    const response: HasuraGroupedQueryResp | HasuraErrors =
+      await request.json();
+
+    if (response.errors) {
+      const { errors } = response as HasuraErrors;
+
+      throw `(queryShelfItems): \n ${errors
+        .map(err => `${err.extensions.path}: ${err.message}`)
+        .join('\n')} \n ${query}`;
+    }
+
+    return (response as HasuraGroupedQueryResp).data;
   } catch (error) {
     console.log(error);
     throw error;
